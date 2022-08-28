@@ -38,14 +38,13 @@ enum State {
 , Running = 'running'
 }
 
-enum Event {
-  Start = 'start'
-, Stop = 'stop'
-}
+type Event =
+| 'start'
+| 'stop'
 
 const schema: IFiniteStateMachineSchema<State, Event> = {
-  [State.Stopped]: { [Event.Start]: State.Running }
-, [State.Running]: { [Event.Stop]: State.Stopped }
+  [State.Stopped]: { start: State.Running }
+, [State.Running]: { stop: State.Stopped }
 }
 
 export class GameLoop<FixedDeltaTime extends number> {
@@ -75,7 +74,7 @@ export class GameLoop<FixedDeltaTime extends number> {
   }
 
   start(): void {
-    this.fsm.send(Event.Start)
+    this.fsm.send('start')
 
     const timestamp = performance.now()
     this.loopStartTimestmap = timestamp
@@ -84,7 +83,7 @@ export class GameLoop<FixedDeltaTime extends number> {
   }
 
   stop(): void {
-    this.fsm.send(Event.Stop)
+    this.fsm.send('stop')
 
     cancelAnimationFrame(this.requstId!)
   }
