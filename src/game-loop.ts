@@ -55,10 +55,9 @@ export class GameLoop<FixedDeltaTime extends number> {
   private readonly update: (deltaTime: number) => void
   private readonly render: () => void
   private requstId?: number
-  private loopStartTimestmap?: number
   private lastTimestamp?: number
-  private frames = 0
   private deltaTimeAccumulator = 0
+  private lastDeltaTime = 0
 
   constructor(options: IGameLoopOptions<FixedDeltaTime>) {
     this.fixedDeltaTime = options.fixedDeltaTime
@@ -77,7 +76,6 @@ export class GameLoop<FixedDeltaTime extends number> {
     this.fsm.send('start')
 
     const timestamp = performance.now()
-    this.loopStartTimestmap = timestamp
     this.lastTimestamp = timestamp
     this.loop(timestamp)
   }
@@ -86,13 +84,16 @@ export class GameLoop<FixedDeltaTime extends number> {
     this.fsm.send('stop')
 
     cancelAnimationFrame(this.requstId!)
+
+    delete this.requstId
+    delete this.lastTimestamp
+    this.lastDeltaTime = 0
   }
 
   getFramesOfSecond(): number {
     if (this.fsm.matches(State.Running)) {
-      const elapsedMs = performance.now() - this.loopStartTimestmap!
-      return elapsedMs !== 0
-           ? this.frames / (elapsedMs / 1000)
+      return this.lastDeltaTime !== 0
+           ? 1000 / this.lastDeltaTime
            : 0
     } else {
       return 0
@@ -101,6 +102,7 @@ export class GameLoop<FixedDeltaTime extends number> {
 
   private loop = (timestamp: number): void => {
     const deltaTime = timestamp - this.lastTimestamp!
+    this.lastDeltaTime = deltaTime
     this.lastTimestamp = timestamp
 
     this.nextFrame(deltaTime)
@@ -127,7 +129,5 @@ export class GameLoop<FixedDeltaTime extends number> {
     }
     this.update(deltaTime)
     this.render()
-
-    this.frames++
   }
 }

@@ -217,7 +217,8 @@ describe('GameLoop', () => {
           await advanceTimersByTime(1000 / 60)
         }
 
-        expect(Math.round(gameLoop.getFramesOfSecond())).toBe(60)
+        expect(Math.round(gameLoop.getFramesOfSecond())).toBeGreaterThan(50)
+        expect(Math.round(gameLoop.getFramesOfSecond())).toBeLessThanOrEqual(60)
       } finally {
         gameLoop.stop()
       }
