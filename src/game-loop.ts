@@ -75,9 +75,8 @@ export class GameLoop<FixedDeltaTime extends number> {
   start(): void {
     this.fsm.send('start')
 
-    const timestamp = performance.now()
-    this.lastTimestamp = timestamp
-    this.loop(timestamp)
+    this.lastTimestamp = performance.now()
+    this.loop()
   }
 
   stop(): void {
@@ -100,7 +99,11 @@ export class GameLoop<FixedDeltaTime extends number> {
     }
   }
 
-  private loop = (timestamp: number): void => {
+  private loop = (): void => {
+    // requestAnimationFrame的实现存在陷阱, 它提供的timestamp参数有时会比`performance.now()`早.
+    // 因此主动调用`performance.now()`来获取时间戳.
+    // https://stackoverflow.com/questions/50895206/exact-time-of-display-requestanimationframe-usage-and-timeline
+    const timestamp = performance.now()
     const deltaTime = timestamp - this.lastTimestamp!
     this.lastDeltaTime = deltaTime
     this.lastTimestamp = timestamp
