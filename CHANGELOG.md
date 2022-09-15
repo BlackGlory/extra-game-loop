@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/BlackGlory/extra-game-loop/compare/v0.1.2...v0.1.3) (2022-09-15)
+
+
+### Bug Fixes
+
+* add a hack for chromium ([ce3a6e4](https://github.com/BlackGlory/extra-game-loop/commit/ce3a6e4b3a2064f6e0bed193427759be8774a81d))
+
 ### [0.1.2](https://github.com/BlackGlory/extra-game-loop/compare/v0.1.1...v0.1.2) (2022-09-15)
 
 
