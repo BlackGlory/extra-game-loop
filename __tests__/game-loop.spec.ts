@@ -188,9 +188,15 @@ describe('GameLoop', () => {
 
     try {
       expect(render).toBeCalledTimes(1) // 0ms, frame 1
+      expect(render).lastCalledWith(expect.any(Number))
+      const alpha1 = render.mock.lastCall[0]
+      expect(alpha1).toBe(0) // 第一帧的alpha一定为0, 因为deltaTime为0
 
       await advanceTimersByTime(1) // 1ms, frame 2
       expect(render).toBeCalledTimes(2)
+      expect(render).lastCalledWith(expect.any(Number))
+      const alpha2 = render.mock.lastCall[0]
+      expect(alpha2).toBe(0.002) // 第二帧的alpha为`1ms / 500ms = 0.002`
     } finally {
       gameLoop.stop()
     }
