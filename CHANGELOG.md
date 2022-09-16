@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/BlackGlory/extra-game-loop/compare/v0.1.3...v0.1.4) (2022-09-16)
+
+
+### Features
+
+* add alpha of interpolation support ([4ee32b6](https://github.com/BlackGlory/extra-game-loop/commit/4ee32b66078175de88263d8dbf60e8033b811369))
+
 ### [0.1.3](https://github.com/BlackGlory/extra-game-loop/compare/v0.1.2...v0.1.3) (2022-09-15)
 
 
