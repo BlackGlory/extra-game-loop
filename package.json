@@ -68,6 +68,6 @@
   },
   "dependencies": {
     "@blackglory/prelude": "^0.1.5",
-    "@blackglory/structures": "^0.10.14"
+    "@blackglory/structures": "^0.10.22"
   }
 }
