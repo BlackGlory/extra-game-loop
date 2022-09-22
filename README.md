@@ -8,15 +8,16 @@ yarn add extra-game-loop
 
 ## Usage
 ```ts
-import { GameLoop } from 'extra-game-loop'
+import { GameLoop, Mode } from 'extra-game-loop'
 
 const gameLoop = new GameLoop({
-  fixedDeltaTime: 1000 / 50
+  mode: Mode.UpdateFirst
+, fixedDeltaTime: 1000 / 50
 , maximumDeltaTime: (1000 / 50) * 30
-, fixedUpdate(deltaTime: number): State {
+, update(deltaTime: number): void {
     // ...
   }
-, update(deltaTime: number): void {
+, fixedUpdate(deltaTime: number): State {
     // ...
   }
 , render(alpha: number): void {
@@ -30,12 +31,18 @@ gameLoop.start()
 ## API
 ### GameLoop
 ```ts
+enum Mode {
+  UpdateFirst // [Update, FixedUpdate, Render]
+, FixedUpdateFirst // [FixedUpdate, Update, Render]
+}
+
 class GameLoop<FixedDeltaTime extends number> {
   constructor(options: {
+    mode: Mode
     fixedDeltaTime: FixedDeltaTime /* ms */
     maximumDeltaTime: number /* ms */
-    fixedUpdate: (deltaTime: FixedDeltaTime /* ms */) => void
     update: (deltaTime: number /* ms */) => void
+    fixedUpdate: (deltaTime: FixedDeltaTime /* ms */) => void
     render: (alpha: number /* [0, 1) */) => void
   })
 

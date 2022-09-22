@@ -1,4 +1,4 @@
-import { GameLoop } from '@src/game-loop'
+import { GameLoop, Mode } from '@src/game-loop'
 import { ReusableDeferred } from 'extra-promise'
 import { go } from '@blackglory/prelude'
 import { setTimeout } from 'extra-timers'
@@ -56,12 +56,97 @@ afterEach(() => {
 })
 
 describe('GameLoop', () => {
+  describe('mode', () => {
+    test('UpdateFirst', async () => {
+      const orderOfExecution: string[] = []
+      const update = jest.fn(() => {
+        orderOfExecution.push('Update')
+      })
+      const render = jest.fn(() => {
+        orderOfExecution.push('Render')
+      })
+      const fixedUpdate = jest.fn(() => {
+        orderOfExecution.push('FixedUpdate')
+      })
+      const gameLoop = new GameLoop({
+        mode: Mode.UpdateFirst
+      , fixedDeltaTime: 500
+      , maximumDeltaTime: Infinity
+      , update
+      , render
+      , fixedUpdate
+      })
+      gameLoop.start()
+
+      try {
+        // frame 1
+        expect(orderOfExecution).toStrictEqual([
+          'Update'
+        , 'Render'
+        ])
+        orderOfExecution.length = 0
+
+        await advanceTimersByTime(500) // 500ms, frame 2
+
+        expect(orderOfExecution).toStrictEqual([
+          'Update'
+        , 'FixedUpdate'
+        , 'Render'
+        ])
+      } finally {
+        gameLoop.stop()
+      }
+    })
+
+    test('FixedUpdateFirst', async () => {
+      const orderOfExecution: string[] = []
+      const update = jest.fn(() => {
+        orderOfExecution.push('Update')
+      })
+      const render = jest.fn(() => {
+        orderOfExecution.push('Render')
+      })
+      const fixedUpdate = jest.fn(() => {
+        orderOfExecution.push('FixedUpdate')
+      })
+      const gameLoop = new GameLoop({
+        mode: Mode.FixedUpdateFirst
+      , fixedDeltaTime: 500
+      , maximumDeltaTime: Infinity
+      , update
+      , render
+      , fixedUpdate
+      })
+      gameLoop.start()
+
+      try {
+        // frame 1
+        expect(orderOfExecution).toStrictEqual([
+          'Update'
+        , 'Render'
+        ])
+        orderOfExecution.length = 0
+
+        await advanceTimersByTime(500) // 500ms, frame 2
+
+        expect(orderOfExecution).toStrictEqual([
+          'FixedUpdate'
+        , 'Update'
+        , 'Render'
+        ])
+      } finally {
+        gameLoop.stop()
+      }
+    })
+  })
+
   test('fixedDeltaTime', async () => {
     const update = jest.fn()
     const render = jest.fn()
     const fixedUpdate = jest.fn()
     const gameLoop = new GameLoop({
-      fixedDeltaTime: 500
+      mode: Mode.UpdateFirst
+    , fixedDeltaTime: 500
     , maximumDeltaTime: Infinity
     , update
     , render
@@ -90,7 +175,8 @@ describe('GameLoop', () => {
     const render = jest.fn()
     const fixedUpdate = jest.fn()
     const gameLoop = new GameLoop({
-      fixedDeltaTime: 500
+      mode: Mode.UpdateFirst
+    , fixedDeltaTime: 500
     , maximumDeltaTime: 500
     , update
     , render
@@ -119,7 +205,8 @@ describe('GameLoop', () => {
     const render = jest.fn()
     const fixedUpdate = jest.fn()
     const gameLoop = new GameLoop({
-      fixedDeltaTime: 500
+      mode: Mode.UpdateFirst
+    , fixedDeltaTime: 500
     , maximumDeltaTime: Infinity
     , update
     , render
@@ -146,7 +233,8 @@ describe('GameLoop', () => {
     const render = jest.fn()
     const fixedUpdate = jest.fn()
     const gameLoop = new GameLoop({
-      fixedDeltaTime: 500
+      mode: Mode.UpdateFirst
+    , fixedDeltaTime: 500
     , maximumDeltaTime: Infinity
     , update
     , render
@@ -178,7 +266,8 @@ describe('GameLoop', () => {
     const render = jest.fn()
     const fixedUpdate = jest.fn()
     const gameLoop = new GameLoop({
-      fixedDeltaTime: 500
+      mode: Mode.UpdateFirst
+    , fixedDeltaTime: 500
     , maximumDeltaTime: Infinity
     , update
     , render
@@ -208,7 +297,8 @@ describe('GameLoop', () => {
       const render = jest.fn()
       const fixedUpdate = jest.fn()
       const gameLoop = new GameLoop({
-        fixedDeltaTime: Infinity
+        mode: Mode.UpdateFirst
+      , fixedDeltaTime: Infinity
       , maximumDeltaTime: Infinity
       , update
       , render
@@ -235,7 +325,8 @@ describe('GameLoop', () => {
       const render = jest.fn()
       const fixedUpdate = jest.fn()
       const gameLoop = new GameLoop({
-        fixedDeltaTime: Infinity
+        mode: Mode.UpdateFirst
+      , fixedDeltaTime: Infinity
       , maximumDeltaTime: Infinity
       , update
       , render
