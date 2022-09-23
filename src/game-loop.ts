@@ -1,14 +1,7 @@
 import { FiniteStateMachine, IFiniteStateMachineSchema } from '@blackglory/structures'
 import { go, assert } from '@blackglory/prelude'
 
-export enum Mode {
-  UpdateFirst
-, FixedUpdateFirst
-}
-
 interface IGameLoopOptions<FixedDeltaTime extends number> {
-  mode: Mode
-
   /**
    * 物理帧一帧经过的时间, 可以通过`1000/fps`得来, 或物理引擎指示的最小deltaTime.
    */
@@ -22,17 +15,23 @@ interface IGameLoopOptions<FixedDeltaTime extends number> {
   maximumDeltaTime: number
 
   /**
-   * 每帧运行一次, 运行时机取决于mode.
+   * 每帧运行一次, 运行早于fixedUpdate.
    * 在此处理用户输入等与物理计算无关的操作, 在update里改变的状态直到下一物理帧时才会反应.
    */
   update: (deltaTime: number) => void
 
   /**
-   * 每物理帧运行一次, 运行时机取决于mode.
+   * 每物理帧运行一次, 运行晚于update, 早于lateUpdate.
    * deltaTime固定等于fixedDeltaTime.
    * 一帧中可能运行零次, 一次, 或数十次, 不应在此处理物理计算以外的繁重操作.
    */
   fixedUpdate: (deltaTime: FixedDeltaTime) => void
+
+  /**
+   * 每帧运行一次, 运行晚于fixedUpdate.
+   * 出于各种原因, 你可能会想使用它而不是update.
+   */
+  lateUpdate: (deltaTime: number) => void
 
   /**
    * 每帧运行一次, 总是运行在fixedUpdate和udpate之后.
@@ -58,10 +57,10 @@ export class GameLoop<FixedDeltaTime extends number> {
   private readonly fsm = new FiniteStateMachine(schema, State.Stopped)
   private readonly fixedDeltaTime: FixedDeltaTime
   private readonly maximumDeltaTime: number
-  private readonly fixedUpdate: (fixedDeltaTime: FixedDeltaTime) => void
   private readonly update: (deltaTime: number) => void
+  private readonly fixedUpdate: (fixedDeltaTime: FixedDeltaTime) => void
+  private readonly lateUpdate: (deltaTime: number) => void
   private readonly render: (alpha: number) => void
-  private nextFrame: (deltaTime: number) => void
   private requstId?: number
   private lastTimestamp?: number
   private deltaTimeAccumulator = 0
@@ -75,16 +74,10 @@ export class GameLoop<FixedDeltaTime extends number> {
     , 'maximumDeltaTime must be greater than or equal to fixedDeltaTime'
     )
 
-    this.fixedUpdate = options.fixedUpdate
     this.update = options.update
+    this.fixedUpdate = options.fixedUpdate
+    this.lateUpdate = options.lateUpdate
     this.render = options.render
-    this.nextFrame = go(() => {
-      switch (options.mode) {
-        case Mode.UpdateFirst: return this.nextFrameUpdateFirst.bind(this)
-        case Mode.FixedUpdateFirst: return this.nextFrameFixedUpdateFirst.bind(this)
-        default: throw new Error('Unknown mode')
-      }
-    })
   }
 
   start(): void {
@@ -135,7 +128,7 @@ export class GameLoop<FixedDeltaTime extends number> {
    *    注意, 如果渲染帧率比物理帧率快, 且运行性能良好, 则物理帧不一定会在此帧更新.
    * 3. 渲染经过更新后的最新状态, 渲染器可以根据alpha参数执行插值渲染.
    */
-  private nextFrameUpdateFirst(deltaTime: number): void {
+  private nextFrame(deltaTime: number): void {
     this.deltaTimeAccumulator = Math.min(
       this.deltaTimeAccumulator + deltaTime
     , this.maximumDeltaTime
@@ -148,29 +141,7 @@ export class GameLoop<FixedDeltaTime extends number> {
       this.deltaTimeAccumulator -= this.fixedDeltaTime
     }
 
-    const alpha = this.deltaTimeAccumulator / this.fixedDeltaTime
-    this.render(alpha)
-  }
-
-  /**
-   * nextFrameFixedUpdateFirst依序做以下几件事:
-   * 1. 响应游戏世界从上一帧更新后到这一帧更新之前发生的物理变化.
-   *    注意, 如果渲染帧率比物理帧率快, 且运行性能良好, 则物理帧不一定会在此帧更新.
-   * 2. 响应用户输入, 为这一帧的游戏世界做出非物理方面的更新, 例如角色转向, 改变武器瞄准角度等.
-   * 3. 渲染经过更新后的最新状态, 渲染器可以根据alpha参数执行插值渲染.
-   */
-  private nextFrameFixedUpdateFirst(deltaTime: number): void {
-    this.deltaTimeAccumulator = Math.min(
-      this.deltaTimeAccumulator + deltaTime
-    , this.maximumDeltaTime
-    )
-
-    while (this.deltaTimeAccumulator >= this.fixedDeltaTime) {
-      this.fixedUpdate(this.fixedDeltaTime)
-      this.deltaTimeAccumulator -= this.fixedDeltaTime
-    }
-
-    this.update(deltaTime)
+    this.lateUpdate(deltaTime)
 
     const alpha = this.deltaTimeAccumulator / this.fixedDeltaTime
     this.render(alpha)
