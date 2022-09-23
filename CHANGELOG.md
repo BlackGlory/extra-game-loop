@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/BlackGlory/extra-game-loop/compare/v0.2.0...v0.3.0) (2022-09-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Removed `options.mode`
+
+* replace `options.mode` with `options.lateUpdate` ([467a091](https://github.com/BlackGlory/extra-game-loop/commit/467a09191df10c7acc309b15faa890c1ccb41c62))
+
 ## [0.2.0](https://github.com/BlackGlory/extra-game-loop/compare/v0.1.4...v0.2.0) (2022-09-22)
 
 
