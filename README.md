@@ -16,7 +16,7 @@ const gameLoop = new GameLoop({
 , update(deltaTime: number): void {
     // ...
   }
-, fixedUpdate(deltaTime: number): State {
+, fixedUpdate(deltaTime: number): void {
     // ...
   }
 , lateUpdate(dletaTime: number): void {
