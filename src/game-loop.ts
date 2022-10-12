@@ -1,5 +1,5 @@
-import { FiniteStateMachine, IFiniteStateMachineSchema } from '@blackglory/structures'
-import { go, assert } from '@blackglory/prelude'
+import { FiniteStateMachine, IFiniteStateMachineSchema } from 'extra-fsm'
+import { assert } from '@blackglory/prelude'
 
 interface IGameLoopOptions<FixedDeltaTime extends number = number> {
   /**
