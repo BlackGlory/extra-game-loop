@@ -1,7 +1,7 @@
 import { FiniteStateMachine, IFiniteStateMachineSchema } from '@blackglory/structures'
 import { go, assert } from '@blackglory/prelude'
 
-interface IGameLoopOptions<FixedDeltaTime extends number> {
+interface IGameLoopOptions<FixedDeltaTime extends number = number> {
   /**
    * 物理帧一帧经过的时间, 可以通过`1000/fps`得来, 或物理引擎指示的最小deltaTime.
    */

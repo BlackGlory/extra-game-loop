@@ -33,7 +33,7 @@ gameLoop.start()
 ## API
 ### GameLoop
 ```ts
-class GameLoop<FixedDeltaTime extends number> {
+class GameLoop<FixedDeltaTime extends number = number> {
   constructor(options: {
     fixedDeltaTime: FixedDeltaTime /* ms */
     maximumDeltaTime: number /* ms */
