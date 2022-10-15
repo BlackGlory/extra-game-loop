@@ -244,13 +244,15 @@ describe('GameLoop', () => {
 
     try {
       expect(lateUpdate).toBeCalledTimes(1) // 0ms, frame 1
-      const [deltaTime1] = lateUpdate.mock.lastCall
+      const [deltaTime1, alpha1] = lateUpdate.mock.lastCall
       expect(deltaTime1).toBe(0)
+      expect(alpha1).toBe(0) // 第一帧的alpha一定为0, 因为deltaTime为0
 
       await advanceTimersByTime(1) // 1ms, frame 2
       expect(lateUpdate).toBeCalledTimes(2)
-      const [deltaTime2] = lateUpdate.mock.lastCall
+      const [deltaTime2, alpha2] = lateUpdate.mock.lastCall
       expect(deltaTime2).toBe(1)
+      expect(alpha2).toBe(0.002) // 第二帧的alpha为`1ms / 500ms = 0.002`
     } finally {
       gameLoop.stop()
     }

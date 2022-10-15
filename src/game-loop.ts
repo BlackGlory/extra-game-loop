@@ -28,10 +28,10 @@ interface IGameLoopOptions<FixedDeltaTime extends number = number> {
   fixedUpdate: (deltaTime: FixedDeltaTime) => void
 
   /**
-   * 每帧运行一次, 运行晚于fixedUpdate.
-   * 出于各种原因, 你可能会想使用它而不是update.
+   * 每帧运行一次, 运行晚于fixedUpdate, 能获得alpha.
+   * 出于各种原因, 你可能会想使用它.
    */
-  lateUpdate: (deltaTime: number) => void
+  lateUpdate: (deltaTime: number, alpha: number) => void
 
   /**
    * 每帧运行一次, 总是运行在fixedUpdate和udpate之后.
@@ -59,7 +59,7 @@ export class GameLoop<FixedDeltaTime extends number> {
   private readonly maximumDeltaTime: number
   private readonly update: (deltaTime: number) => void
   private readonly fixedUpdate: (fixedDeltaTime: FixedDeltaTime) => void
-  private readonly lateUpdate: (deltaTime: number) => void
+  private readonly lateUpdate: (deltaTime: number, alpha: number) => void
   private readonly render: (alpha: number) => void
   private requstId?: number
   private lastTimestamp?: number
@@ -141,9 +141,8 @@ export class GameLoop<FixedDeltaTime extends number> {
       this.deltaTimeAccumulator -= this.fixedDeltaTime
     }
 
-    this.lateUpdate(deltaTime)
-
     const alpha = this.deltaTimeAccumulator / this.fixedDeltaTime
+    this.lateUpdate(deltaTime, alpha)
     this.render(alpha)
   }
 }

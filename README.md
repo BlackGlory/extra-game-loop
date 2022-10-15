@@ -19,7 +19,7 @@ const gameLoop = new GameLoop({
 , fixedUpdate(deltaTime: number): void {
     // ...
   }
-, lateUpdate(dletaTime: number): void {
+, lateUpdate(deltaTime: number, alpha: number): void {
     // ...
   }
 , render(alpha: number): void {
@@ -39,7 +39,7 @@ class GameLoop<FixedDeltaTime extends number = number> {
     maximumDeltaTime: number /* ms */
     update: (deltaTime: number /* ms */) => void
     fixedUpdate: (deltaTime: FixedDeltaTime /* ms */) => void
-    lateUpdate: (deltaTime: number /* ms */) => void
+    lateUpdate: (deltaTime: number /* ms */, alpha: number) => void
     render: (alpha: number /* [0, 1) */) => void
   })
 
