@@ -338,6 +338,48 @@ describe('GameLoop', () => {
       expect(result).toBe(0)
     })
   })
+
+  test('nextFrame', async () => {
+    const orderOfExecution: string[] = []
+    const update = jest.fn(() => {
+      orderOfExecution.push('Update')
+    })
+    const fixedUpdate = jest.fn(() => {
+      orderOfExecution.push('FixedUpdate')
+    })
+    const lateUpdate = jest.fn(() => {
+      orderOfExecution.push('LateUpdate')
+    })
+    const render = jest.fn(() => {
+      orderOfExecution.push('Render')
+    })
+    const gameLoop = new GameLoop({
+      fixedDeltaTime: 500
+    , maximumDeltaTime: Infinity
+    , update
+    , fixedUpdate
+    , lateUpdate
+    , render
+    })
+
+    gameLoop.nextFrame(0)
+    // 0ms, frame 1
+    expect(orderOfExecution).toStrictEqual([
+      'Update'
+    , 'LateUpdate'
+    , 'Render'
+    ])
+
+    orderOfExecution.length = 0
+
+    gameLoop.nextFrame(500) // 500ms, frame 2
+    expect(orderOfExecution).toStrictEqual([
+      'Update'
+    , 'FixedUpdate'
+    , 'LateUpdate'
+    , 'Render'
+    ])
+  })
 })
 
 async function advanceTimersByTime(timeout: number): Promise<void> {

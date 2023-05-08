@@ -45,7 +45,11 @@ class GameLoop<FixedDeltaTime extends number = number> {
 
   start(): void
   stop(): void
-
   getFramesOfSecond(): number
+
+  /**
+   * This method allows you to manually advance to the next frame.
+   */
+  nextFrame(deltaTime: number): void
 }
 ```

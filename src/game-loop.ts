@@ -128,7 +128,7 @@ export class GameLoop<FixedDeltaTime extends number> {
    *    注意, 如果渲染帧率比物理帧率快, 且运行性能良好, 则物理帧不一定会在此帧更新.
    * 3. 渲染经过更新后的最新状态, 渲染器可以根据alpha参数执行插值渲染.
    */
-  private nextFrame(deltaTime: number): void {
+  nextFrame(deltaTime: number): void {
     this.deltaTimeAccumulator = Math.min(
       this.deltaTimeAccumulator + deltaTime
     , this.maximumDeltaTime
