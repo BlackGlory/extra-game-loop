@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.6](https://github.com/BlackGlory/extra-game-loop/compare/v0.3.5...v0.3.6) (2024-08-14)
+
+
+### Features
+
+* add `GameLoopLite` ([a38d878](https://github.com/BlackGlory/extra-game-loop/commit/a38d87869226c85df98cd379d6834947da4449b2))
+
 ### [0.3.5](https://github.com/BlackGlory/extra-game-loop/compare/v0.3.4...v0.3.5) (2024-08-14)
 
 
