@@ -18,25 +18,25 @@ interface IGameLoopOptions<FixedDeltaTime extends number = number> {
    * 每帧运行一次, 运行早于fixedUpdate.
    * 在此处理用户输入等与物理计算无关的操作, 在update里改变的状态直到下一物理帧时才会反应.
    */
-  update: (deltaTime: number) => void
+  update?: (deltaTime: number) => void
 
   /**
    * 每物理帧运行一次, 运行晚于update, 早于lateUpdate.
    * deltaTime固定等于fixedDeltaTime.
    * 一帧中可能运行零次, 一次, 或数十次, 不应在此处理物理计算以外的繁重操作.
    */
-  fixedUpdate: (deltaTime: FixedDeltaTime) => void
+  fixedUpdate?: (deltaTime: FixedDeltaTime) => void
 
   /**
    * 每帧运行一次, 运行晚于fixedUpdate, 能获得alpha.
    * 出于各种原因, 你可能会想使用它.
    */
-  lateUpdate: (deltaTime: number, alpha: number) => void
+  lateUpdate?: (deltaTime: number, alpha: number) => void
 
   /**
    * 每帧运行一次, 总是运行在fixedUpdate和udpate之后.
    */
-  render: (alpha: number) => void
+  render?: (alpha: number) => void
 }
 
 enum State {
@@ -57,10 +57,10 @@ export class GameLoop<FixedDeltaTime extends number> {
   private readonly fsm = new FiniteStateMachine(schema, State.Stopped)
   private readonly fixedDeltaTime: FixedDeltaTime
   private readonly maximumDeltaTime: number
-  private readonly update: (deltaTime: number) => void
-  private readonly fixedUpdate: (fixedDeltaTime: FixedDeltaTime) => void
-  private readonly lateUpdate: (deltaTime: number, alpha: number) => void
-  private readonly render: (alpha: number) => void
+  private readonly update?: (deltaTime: number) => void
+  private readonly fixedUpdate?: (fixedDeltaTime: FixedDeltaTime) => void
+  private readonly lateUpdate?: (deltaTime: number, alpha: number) => void
+  private readonly render?: (alpha: number) => void
   private requstId?: number
   private lastTimestamp?: number
   private deltaTimeAccumulator = 0
@@ -134,15 +134,15 @@ export class GameLoop<FixedDeltaTime extends number> {
     , this.maximumDeltaTime
     )
 
-    this.update(deltaTime)
+    this.update?.(deltaTime)
 
     while (this.deltaTimeAccumulator >= this.fixedDeltaTime) {
-      this.fixedUpdate(this.fixedDeltaTime)
+      this.fixedUpdate?.(this.fixedDeltaTime)
       this.deltaTimeAccumulator -= this.fixedDeltaTime
     }
 
     const alpha = this.deltaTimeAccumulator / this.fixedDeltaTime
-    this.lateUpdate(deltaTime, alpha)
-    this.render(alpha)
+    this.lateUpdate?.(deltaTime, alpha)
+    this.render?.(alpha)
   }
 }

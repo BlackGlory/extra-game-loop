@@ -37,10 +37,10 @@ class GameLoop<FixedDeltaTime extends number = number> {
   constructor(options: {
     fixedDeltaTime: FixedDeltaTime /* ms */
     maximumDeltaTime: number /* ms */
-    update: (deltaTime: number /* ms */) => void
-    fixedUpdate: (deltaTime: FixedDeltaTime /* ms */) => void
-    lateUpdate: (deltaTime: number /* ms */, alpha: number) => void
-    render: (alpha: number /* [0, 1) */) => void
+    update?: (deltaTime: number /* ms */) => void
+    fixedUpdate?: (deltaTime: FixedDeltaTime /* ms */) => void
+    lateUpdate?: (deltaTime: number /* ms */, alpha: number) => void
+    render?: (alpha: number /* [0, 1) */) => void
   })
 
   start(): void
