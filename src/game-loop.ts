@@ -15,7 +15,7 @@ interface IGameLoopOptions<FixedDeltaTime extends number = number> {
   maximumDeltaTime: number
 
   /**
-   * 每帧运行一次, 运行早于fixedUpdate.
+   * 每帧运行一次, 总是最早运行.
    * 在此处理用户输入等与物理计算无关的操作, 在update里改变的状态直到下一物理帧时才会反应.
    */
   update?: (deltaTime: number) => void
@@ -34,7 +34,7 @@ interface IGameLoopOptions<FixedDeltaTime extends number = number> {
   lateUpdate?: (deltaTime: number, alpha: number) => void
 
   /**
-   * 每帧运行一次, 总是运行在fixedUpdate和udpate之后.
+   * 每帧运行一次, 总是最晚运行.
    */
   render?: (alpha: number) => void
 }
@@ -122,7 +122,7 @@ export class GameLoop<FixedDeltaTime extends number> {
   }
 
   /**
-   * nextFrameUpdateFirst依序做以下几件事:
+   * nextFrame依序做以下几件事:
    * 1. 响应用户输入, 为这一帧的游戏世界做出非物理方面的更新, 例如角色转向, 改变武器瞄准角度等.
    * 2. 响应游戏世界从上一帧更新后到这一帧更新之前发生的物理变化.
    *    注意, 如果渲染帧率比物理帧率快, 且运行性能良好, 则物理帧不一定会在此帧更新.

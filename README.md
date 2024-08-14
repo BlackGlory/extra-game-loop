@@ -53,3 +53,27 @@ class GameLoop<FixedDeltaTime extends number = number> {
   nextFrame(deltaTime: number): void
 }
 ```
+
+### GameLoopLite
+```ts
+class GameLoopLite {
+  constructor(options: {
+    update?: (deltaTime: number /* ms */) => void
+    render?: () => void
+  })
+
+  start(): void
+  stop(): void
+  getFramesOfSecond(): number
+
+  /**
+   * This method allows you to manually advance to the next frame.
+   */
+  nextFrame(deltaTime: number): void
+}
+```
+
+The lite version of `GameLoop` for situations where the physics system is not needed.
+
+Basically, it can be seen as an OOP wrapper for `requestAnimationFrame`,
+so it can be used for non-game projects as well.
