@@ -52,8 +52,8 @@ export class GameLoopLite {
 
     cancelAnimationFrame(this.requstId!)
 
-    delete this.requstId
-    delete this.lastTimestamp
+    this.requstId = undefined
+    this.lastTimestamp = undefined
     this.lastDeltaTime = 0
   }
 
