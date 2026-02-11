@@ -77,7 +77,10 @@ export class GameLoopLite {
 
     this.nextFrame(deltaTime)
 
-    this.requstId = requestAnimationFrame(this.loop)
+    // 在`nextFrame()`期间游戏循环可能被停止, 因此需要检查游戏循环的状态.
+    if (this.fsm.matches(State.Running)) {
+      this.requstId = requestAnimationFrame(this.loop)
+    }
   }
 
   nextFrame(deltaTime: number): void {
