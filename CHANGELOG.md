@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.9](https://github.com/BlackGlory/extra-game-loop/compare/v0.3.8...v0.3.9) (2026-02-11)
+
+
+### Bug Fixes
+
+* **game-loop, game-loop-lite:** an infinite loop case ([5a5bf95](https://github.com/BlackGlory/extra-game-loop/commit/5a5bf95ef4ce6c5d561563a726cfa0214c9fcff8))
+
 ### [0.3.8](https://github.com/BlackGlory/extra-game-loop/compare/v0.3.7...v0.3.8) (2025-11-03)
 
 ### [0.3.7](https://github.com/BlackGlory/extra-game-loop/compare/v0.3.6...v0.3.7) (2024-08-24)
